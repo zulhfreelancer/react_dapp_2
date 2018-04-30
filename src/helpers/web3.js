@@ -28,10 +28,10 @@ let web3App = {
     web3App.contracts.TutorialToken.setProvider(web3App.web3Provider);
   },
 
-  getBalance: async function(format) {
+  getTokenBalance: async function(format) {
     const accounts = await web3App.getAccounts();
     const account  = accounts[0];
-    let contract   = await web3App.contracts.TutorialToken.deployed()
+    let contract   = await web3App.contracts.TutorialToken.deployed();
     let balance    = await contract.balanceOf(account);
     let balanceStr = bigNumberToString(balance);
     if (format === 'raw') return balanceStr;

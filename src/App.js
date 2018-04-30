@@ -66,8 +66,8 @@ class App extends Component {
   }
 
   async fetchBalance() {
-    let balanceRaw = await web3App.getBalance('raw');
-    let prettyBal  = await web3App.getBalance();
+    let balanceRaw = await web3App.getTokenBalance('raw');
+    let prettyBal  = await web3App.getTokenBalance(null);
     this.setState({ balanceRaw: balanceRaw, prettyBal: prettyBal });
   }
 
