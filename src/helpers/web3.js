@@ -1,12 +1,16 @@
 import Web3 from 'web3';
+import TruffleContract from 'truffle-contract';
+import bigNumberToString from 'bignumber-to-string';
+import commaIt from 'comma-it';
 
 let web3App = {
   web3: window.web3,
   instance: null,
+  contracts: {},
 
   init: function() {
     web3App.initWeb3();
-    web3App.initContract();
+    web3App.initContract('TutorialToken');
   },
 
   initWeb3: function() {
@@ -17,8 +21,21 @@ let web3App = {
     }
   },
 
-  initContract: function() {
-    // console.log('Hello from initContract');
+  initContract: async function(tokenName) {
+    let res = await fetch(`./abi/${tokenName}.json`);
+    let abi = await res.json();
+    web3App.contracts.TutorialToken = TruffleContract(abi);
+    web3App.contracts.TutorialToken.setProvider(web3App.web3Provider);
+  },
+
+  getBalance: async function(format) {
+    const accounts = await web3App.getAccounts();
+    const account  = accounts[0];
+    let contract   = await web3App.contracts.TutorialToken.deployed()
+    let balance    = await contract.balanceOf(account);
+    let balanceStr = bigNumberToString(balance);
+    if (format === 'raw') return balanceStr;
+    return commaIt(balanceStr, {addPrecision: true, thousandSeperator: ',', decimalSeperator:  '.'});
   },
 
   getWeb3Instance: function() {

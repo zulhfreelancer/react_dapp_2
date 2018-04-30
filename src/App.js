@@ -11,7 +11,9 @@ class App extends Component {
       isMetaMask: false,
       accounts: [],
       isLoading: false,
-      error: null
+      error: null,
+      balanceRaw: null,
+      prettyBal: null
     }
   }
 
@@ -46,6 +48,7 @@ class App extends Component {
     }
     this.setState(newState);
     this.listenAccountChange();
+    this.fetchBalance();
   }
 
   // this polling function will get called we user login/logout/switch account
@@ -55,13 +58,21 @@ class App extends Component {
     const self = this;
     setInterval(async function() {
       if (await web3App.getAccount(0) !== self.state.accounts[0]) {
-        self.setState({accounts: await web3App.getAccounts()});
+        self.setState({ accounts: await web3App.getAccounts() }, function() {
+          this.fetchBalance();
+        });
       }
     }, 1000);
   }
 
+  async fetchBalance() {
+    let balanceRaw = await web3App.getBalance('raw');
+    let prettyBal  = await web3App.getBalance();
+    this.setState({ balanceRaw: balanceRaw, prettyBal: prettyBal });
+  }
+
   render() {
-    const {isLoading, isMetaMask, accounts, error} = this.state;
+    const {isLoading, isMetaMask, accounts, error, balanceRaw, prettyBal} = this.state;
 
     if (error && !isLoading) {
       return <center>
@@ -100,6 +111,9 @@ class App extends Component {
         <p>Hello!</p>
         <p><b>Active Account</b></p>
         <p>{accounts[0]}</p>
+        <p><b>Balance</b></p>
+        <p>Raw: {balanceRaw}</p>
+        <p>Pretty: {prettyBal}</p>
       </div>
     );
   }
