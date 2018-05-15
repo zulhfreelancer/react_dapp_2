@@ -180,6 +180,16 @@ class App extends Component {
     this.setState({ balanceRaw: balanceRaw, prettyBal: prettyBal });
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    console.log(e);
+    // const to = this.refs.to.value;
+    // const amount = this.refs.amount.value;
+    // console.log(to, amount);
+    // call web3
+    // this.refs.commentForm.reset();
+  }
+
   render() {
     const {
       isLoading,
@@ -217,6 +227,16 @@ class App extends Component {
         <p><b>Balance</b></p>
         <p>Raw: {balanceRaw}</p>
         <p>Pretty: {prettyBal}</p>
+
+        <hr/>
+        <h4>Send tokens</h4>
+        <form ref="txForm" onSubmit={this.handleSubmit}>
+          <label>To</label><br/>
+          <input type="text" ref={node => this.input = node} placeholder="To" /><br/><br/>
+          <label>Amount</label><br/>
+          <input type="text" ref={node2 => this.input = node2} placeholder="Amount" />
+          <input type="submit" hidden /> {/* to make Enter key to work, we need input type submit */}
+        </form>
       </div>
     );
   }
